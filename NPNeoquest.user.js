@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Neopets - Neoquest fixed attack button
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  *scroll scroll* shit *scroll click* *scroll* *click* shit *click*
 // @author       Miles
 // @include      *www.neopets.com/games/neoquest/neoquest.phtml*
@@ -12,9 +12,19 @@
 (function() {
     'use strict';
 
+    var specialAttacks = document.querySelectorAll("[onclick^=setdata\\(\\'special\\']")
+    if (specialAttacks != undefined) {
+        console.log("specialAttacks not undefined")
+        for (var i = 0; i < specialAttacks.length; i++) {
+            specialAttacks[i].textContent += " "
+            document.getElementsByClassName("contentModuleHeader")[0].insertAdjacentElement("afterend", specialAttacks[i])
+            console.log(i+ " is the length")
+        }
+    }
+
     if(document.querySelector('[onclick*=attack]') != null) {
 
-        document.getElementsByClassName("contentModuleHeader")[0].insertAdjacentHTML("afterend", '<a href=javascript:; id=milesAttack>Attack</a>')
+        document.getElementsByClassName("contentModuleHeader")[0].insertAdjacentHTML("afterend", '<a href=javascript:; id=milesAttack>Attack </a>')
         document.getElementById("milesAttack").addEventListener("click", function(){setdata('attack', 0)})
     }
 

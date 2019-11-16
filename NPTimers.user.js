@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Neopets - Kad+Snowager notifier
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  try to take over the world!
 // @author       You
 // @include      *www.neopets.com*
@@ -14,6 +14,28 @@
 // ==/UserScript==
 
 (function() {
+
+    //kadoatie shop wizard stuff
+    if (window.location.pathname == "/games/kadoatery/index.phtml") {
+        var kadoatFood = document.querySelectorAll("td br ~ strong");
+        for (var i = 0; i < kadoatFood.length; i++) {
+            var searchTerm = kadoatFood[i].textContent.replace(/ /g, "\xa0");
+            kadoatFood[i].outerHTML = "<a href=http://www.neopets.com/market.phtml?type=wizard id=kadoatFood onclick=localStorage.kadoatSearch=\"" + searchTerm + "\";>" + kadoatFood[i].textContent + "</a>"
+            console.log(kadoatFood[i].textContent);
+        }
+    }
+
+    function shopWizardKadoat(search) {
+        if (window.location == "http://www.neopets.com/market.phtml?type=wizard" && localStorage.kadoatSearch != undefined) {
+            localStorage.kadoatSearch = localStorage.kadoatSearch.replace(/\xa0/g, " ");
+            document.getElementsByName("shopwizard")[0].value = localStorage.kadoatSearch;
+            localStorage.removeItem("kadoatSearch");
+        }
+    }
+
+    shopWizardKadoat();
+
+    // timer stuff
 
     var this_tab_data, all_tabs, n;
     var shouldRun = false;
@@ -80,6 +102,7 @@
                 shouldRun = true;
             }
         }
+
 
         GM_getTabs(function (db) {
             all_tabs = db;

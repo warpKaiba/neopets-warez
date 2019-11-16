@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Neopets - Kad+Snowager notifier
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  try to take over the world!
 // @author       You
 // @include      *www.neopets.com*
@@ -15,15 +15,22 @@
 
 (function() {
 
+    var kadoatFood, searchTerm;
     //kadoatie shop wizard stuff
     if (window.location.pathname == "/games/kadoatery/index.phtml") {
-        var kadoatFood = document.querySelectorAll("td br ~ strong");
+        kadoatFood = document.querySelectorAll("td br ~ strong");
         for (var i = 0; i < kadoatFood.length; i++) {
-            var searchTerm = kadoatFood[i].textContent.replace(/ /g, "\xa0");
+            searchTerm = kadoatFood[i].textContent.replace(/ /g, "\xa0");
             kadoatFood[i].outerHTML = "<a href=http://www.neopets.com/market.phtml?type=wizard id=kadoatFood onclick=localStorage.kadoatSearch=\"" + searchTerm + "\";>" + kadoatFood[i].textContent + "</a>"
             console.log(kadoatFood[i].textContent);
         }
     }
+
+    if (window.location.href.includes("feed_kadoatie")) {
+            kadoatFood = document.querySelector("div img ~ br ~ strong ~ br ~ br ~ img ~ br ~ strong")
+            searchTerm = kadoatFood.textContent.replace(/ /g, "\xa0");
+            kadoatFood.outerHTML = "<a href=http://www.neopets.com/market.phtml?type=wizard id=kadoatFood onclick=localStorage.kadoatSearch=\"" + searchTerm + "\";>" + kadoatFood.textContent + "</a>"
+        }
 
     function shopWizardKadoat(search) {
         if (window.location == "http://www.neopets.com/market.phtml?type=wizard" && localStorage.kadoatSearch != undefined) {
